@@ -2,10 +2,12 @@ from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.common.by import By
 import time
+import requests
+from bs4 import BeautifulSoup
 
 # Lista de estados
 estados = [
-    'sao-paulo'  # Adicione mais estados conforme necessário
+    'alagoas'  # Adicione mais estados conforme necessário
 ]
 
 # Configuração do Firefox em modo headless
@@ -29,6 +31,23 @@ def scroll_until_all_items_loaded(driver):
             break
         
         last_height = new_height
+
+def process_page(url):
+    try:
+        response = requests.get(url)
+        response.raise_for_status()  # Garante que a requisição foi bem-sucedida
+
+        soup = BeautifulSoup(response.text, 'html.parser')
+        content_div = soup.select_one('div.entry-content')
+
+        if content_div:
+            paragraphs = content_div.select('p')
+            for p in paragraphs:
+                print(p.text)
+        else:
+            print(f'Conteúdo não encontrado para a URL: {url}')
+    except requests.RequestException as e:
+        print(f'Erro ao requisitar a URL: {e}')
 
 try:
     for estado in estados:
@@ -64,6 +83,9 @@ try:
                         
                         # Aguarde um pouco após o clique para garantir que a ação seja completada
                         time.sleep(5)  # Ajuste o tempo conforme necessário
+                        
+                        # Processar a página clicada
+                        process_page(href)
                         
                         # Voltar para a página anterior
                         driver.back()
