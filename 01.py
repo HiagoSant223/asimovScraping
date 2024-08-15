@@ -4,10 +4,11 @@ from selenium.webdriver.common.by import By
 import time
 import requests
 from bs4 import BeautifulSoup
+import csv
 
 # Lista de estados
 estados = [
-    'alagoas'  # Adicione mais estados conforme necessário
+    'alagoas', 'distrito-federal'  # Adicione mais estados conforme necessário
 ]
 
 # Configuração do Firefox em modo headless
@@ -32,7 +33,7 @@ def scroll_until_all_items_loaded(driver):
         
         last_height = new_height
 
-def process_page(url):
+def process_page(url, writer):
     try:
         response = requests.get(url)
         response.raise_for_status()  # Garante que a requisição foi bem-sucedida
@@ -43,13 +44,26 @@ def process_page(url):
         if content_div:
             paragraphs = content_div.select('p')
             for p in paragraphs:
-                print(p.text)
+                # Escreve o texto do parágrafo no arquivo CSV
+                writer.writerow([p.text.strip()])
         else:
             print(f'Conteúdo não encontrado para a URL: {url}')
     except requests.RequestException as e:
         print(f'Erro ao requisitar a URL: {e}')
 
+def save_to_csv(file_name, links):
+    try:
+        with open(file_name, 'w', newline='', encoding='utf-8') as file:
+            writer = csv.writer(file)
+            writer.writerow(['Texto'])  # Cabeçalho do CSV
+            for link in links:
+                process_page(link, writer)
+    except IOError as e:
+        print(f'Erro ao escrever no arquivo CSV: {e}')
+
 try:
+    all_links = set()
+    
     for estado in estados:
         url = f'https://abeoc.org.br/categoria/associados/estado/{estado}/'
         driver.get(url)
@@ -77,15 +91,13 @@ try:
                     try:
                         href = link.get_attribute('href')
                         visited_links.add(href)
+                        all_links.add(href)
                         
                         print(f'Clicando no link: {link.text}')
                         link.click()
                         
                         # Aguarde um pouco após o clique para garantir que a ação seja completada
                         time.sleep(5)  # Ajuste o tempo conforme necessário
-                        
-                        # Processar a página clicada
-                        process_page(href)
                         
                         # Voltar para a página anterior
                         driver.back()
@@ -102,6 +114,10 @@ try:
             except Exception as e:
                 print(f'Erro ao localizar links: {e}')
                 break
+
+    # Salva todos os links em um arquivo CSV após processar todas as páginas
+    save_to_csv('paragrafos_extraidos.csv', all_links)
+
 finally:
     driver.quit()
     print("Navegação concluída.")
