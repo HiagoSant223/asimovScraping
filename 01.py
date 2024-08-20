@@ -8,7 +8,7 @@ import csv
 
 # Lista de estados
 estados = [
-    'alagoas', 'distrito-federal'  # Adicione mais estados conforme necessário
+    'sao-paulo'  # Adicione mais estados conforme necessário
 ]
 
 # Configuração do Firefox em modo headless
@@ -37,19 +37,26 @@ def process_page(url, writer):
     try:
         response = requests.get(url)
         response.raise_for_status()  # Garante que a requisição foi bem-sucedida
+        
+        # Tentar detectar o encoding correto automaticamente
+        soup = BeautifulSoup(response.content, 'html.parser')
+        detected_encoding = soup.original_encoding
+        
+        # Se o encoding detectado não for UTF-8, configurá-lo manualmente
+        if detected_encoding.lower() != 'utf-8':
+            response.encoding = detected_encoding
 
-        soup = BeautifulSoup(response.text, 'html.parser')
         content_div = soup.select_one('div.entry-content')
 
         if content_div:
             paragraphs = content_div.select('p')
             for p in paragraphs:
-                # Escreve o texto do parágrafo no arquivo CSV
                 writer.writerow([p.text.strip()])
         else:
             print(f'Conteúdo não encontrado para a URL: {url}')
     except requests.RequestException as e:
         print(f'Erro ao requisitar a URL: {e}')
+
 
 def save_to_csv(file_name, links):
     try:
