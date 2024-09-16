@@ -9,7 +9,7 @@ import csv
 
 # Lista de estados
 estados = [
-    'sao-paulo' # Adicione mais estados conforme necessário
+    'distrito-federal' # Adicione mais estados conforme necessário
 ]
 
 # Configuração do Firefox em modo headless
@@ -147,11 +147,11 @@ try:
                 break
 
     # Salva todos os dados em um arquivo JSON após processar todas as páginas
-    save_to_json('SãoPaulo.json', all_links)
+    save_to_json('Distrito-federal.json', all_links)
 
 finally:
     driver.quit()
     print("Navegação concluída.")
     
 # Converte o arquivo JSON para CSV
-json_to_csv('SãoPaulo.json', 'SãoPaulo.csv')
+json_to_csv('Distrito-federal.json', 'Distrito-federal.csv')

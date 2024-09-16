@@ -8,21 +8,25 @@ from selenium.common.exceptions import NoSuchElementException, TimeoutException,
 
 # Lista de estados
 estados = [
-    'alagoas', 'amazonas', 'bahia', 'ceara', 'distrito-federal', 'espirito-santo',
-    'goias', 'maranhao', 'mato-grosso', 'mato-grosso-do-sul', 'minas-gerais',
-    'para', 'parana', 'pernambuco', 'piaui', 'rio-de-janeiro', 'rio-grande-do-norte',
-    'rio-grande-do-sul', 'santa-catarina', 'sao-paulo'
+    'alagoas'
 ]
 
 # Função para rolar a página até o final
-def rolar_pagina(driver):
+def scroll_until_all_items_loaded(driver):
     last_height = driver.execute_script("return document.body.scrollHeight")
+    
     while True:
+        # Rolagem para o fim da página
         driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-        time.sleep(3)  # Aguardar a rolagem
+        time.sleep(5)  # Aguarde o carregamento dos novos itens
+        
+        # Verificar a nova altura da página
         new_height = driver.execute_script("return document.body.scrollHeight")
+        
         if new_height == last_height:
+            # Se a altura não mudar, significa que todos os itens foram carregados
             break
+        
         last_height = new_height
 
 # Função para scraping de cada estado
@@ -35,10 +39,9 @@ def scraping_uf(uf: str):
     
     try:
         # Rolar a página até o final para carregar todos os itens
-        rolar_pagina(driver)
         
         # Encontrar e clicar no primeiro 'div' com a classe 'post-meta'
-        post_meta = driver.find_element(By.CSS_SELECTOR, 'div', class_="post-meta")
+        post_meta = driver.find_element(By.CSS_SELECTOR, 'div', class_="btn btn-xs btn-default text-xs text-uppercase")
         post_meta.click()
         
         # Esperar um pouco para a nova página carregar
