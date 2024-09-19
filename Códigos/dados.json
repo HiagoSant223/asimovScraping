@@ -1,12 +1,10 @@
-[
-    {
-        "Nome": "Ache Aqui Eventos",
-        "Slogan": "Ache Aqui Producoes De Eventos Ltda",
-        "Telefone 1": "(11) 97414-7702",
-        "Telefone 2": "(11) 97414-7702",
-        "E-mail": "",
-        "Site 1": "",
-        "Site 2": "",
-        "Site 3": ""
-    }
-]
+{
+    "Nome": "Ache Aqui Eventos",
+    "Slogan": "Ache Aqui Producoes De Eventos Ltda",
+    "Telefone 1": "(11) 97414-7702",
+    "Telefone 2": "(11) 97414-7702",
+    "E-mail": "rafael@acheaquieventos.com.br",
+    "Site": "https://acheaquieventos.com.br/",
+    "Facebook": "https://www.facebook.com/acheaquieventos",
+    "Instagram": "https://www.instagram.com/acheaqui/"
+}

@@ -3,6 +3,7 @@ from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.common.by import By
 import time
 import pandas as pd
+import json
 
 options = Options()
 options.headless = True
@@ -30,13 +31,44 @@ try:
             p_tags = target_div.find_elements(By.TAG_NAME, 'p')
             a_tags = target_div.find_elements(By.TAG_NAME, 'a')
 
+            nome = p_tags[0].text if len(p_tags) > 0 else ''
+            slogan = p_tags[1].text if len(p_tags) > 1 else ''
+            telefones = [p_tags[i].text for i in range(2, 4)] if len(p_tags) > 3 else ['', '']
+            email = ''
+            site = ''
+            facebook = ''
+            instagram = ''
+
+            for a in a_tags:
+                href = a.get_attribute('href')
+                if 'facebook.com' in href:
+                    facebook = href
+                elif 'instagram.com' in href:
+                    instagram = href
+                elif 'mailto:' in href:
+                    email = href.split(':')[1].split('?')[0]  # Captura apenas o e-mail
+                elif site == '':  # Se não tiver um site capturado ainda
+                    site = href
+
             data = {
-                'Paragraphs': [p.text for p in p_tags],
-                'Links': [(a.text, a.get_attribute('href')) for a in a_tags]
+                'Nome': nome,
+                'Slogan': slogan,
+                'Telefone 1': telefones[0],
+                'Telefone 2': telefones[1],
+                'E-mail': email,
+                'Site': site,
+                'Facebook': facebook,
+                'Instagram': instagram
             }
 
-            df = pd.DataFrame(data)
+            df = pd.DataFrame(data, index=[0])
             print(df)
+
+            # Salvando em um arquivo JSON
+            with open('dados.json', 'w') as json_file:
+                json.dump(data, json_file, indent=4)
+
+            print("Dados salvos em 'dados.json'.")
 
             driver.back()
             time.sleep(5)
