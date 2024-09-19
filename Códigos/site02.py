@@ -2,6 +2,7 @@ from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.common.by import By
 import time
+import pandas as pd
 
 options = Options()
 options.headless = True
@@ -29,12 +30,14 @@ try:
             p_tags = target_div.find_elements(By.TAG_NAME, 'p')
             a_tags = target_div.find_elements(By.TAG_NAME, 'a')
 
-            for p in p_tags:
-                print(p.text)
-            
-            for a in a_tags:
-                print(a.text, a.get_attribute('href'))
-            
+            data = {
+                'Paragraphs': [p.text for p in p_tags],
+                'Links': [(a.text, a.get_attribute('href')) for a in a_tags]
+            }
+
+            df = pd.DataFrame(data)
+            print(df)
+
             driver.back()
             time.sleep(5)
 
