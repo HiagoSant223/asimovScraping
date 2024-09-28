@@ -11,14 +11,14 @@ options.headless = True
 driver = webdriver.Firefox(options=options)
 
 try:
-    url = 'https://abrape.com.br/associados/?jsf=jet-engine:lista&tax=estado:263'
+    url = 'https://abrape.com.br/associados/?jsf=jet-engine:lista&tax=estado:286'
     
     all_data = []  # Lista para armazenar os dados coletados
     
     # Acessa a página para capturar os elementos inicialmente
     driver.get(url)
     print(f'Acessando: {url}')
-    time.sleep(5)
+    time.sleep(10)
 
     # Captura os elementos da página
     elements = driver.find_elements(By.CSS_SELECTOR, 'div.elementor.elementor-327')
@@ -28,12 +28,8 @@ try:
     if total_items > 0:
         # Itera sobre os elementos usando seus índices
         for index in range(total_items):
-            # Recarrega a página a cada iteração
-            driver.get(url)
-            time.sleep(5)
-
-            # Após recarregar a página, recaptura os elementos
-            elements = driver.find_elements(By.CSS_SELECTOR, 'div.elementor.elementor-327')
+           
+            time.sleep(10)
 
             if index < len(elements):  # Verifica se o índice é válido
                 element = elements[index]
@@ -41,7 +37,7 @@ try:
                     print(f'[{index + 1}/{total_items}] Clicando no elemento: {element.text}')
                     element.click()  # Clica no item atual
                     
-                    time.sleep(5)
+                    time.sleep(10)
 
                     # Coleta as informações da nova página
                     target_div = driver.find_element(By.CSS_SELECTOR, 'div.elementor-column.elementor-col-50.elementor-top-column.elementor-element.elementor-element-7864a13')
