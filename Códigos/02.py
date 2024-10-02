@@ -86,7 +86,7 @@ finally:
     df = pd.DataFrame(dados)
     
     # Salvar em CSV
-    df.to_csv("dados_extraidos.csv", index=False, encoding='utf-8')
+    df.to_csv("dados_extraidos.csv", sep=';', index=False, encoding='utf-8')
     
     # Salvar em JSON sem o HTML
     with open("dados_extraidos.json", "w", encoding="utf-8") as f:
