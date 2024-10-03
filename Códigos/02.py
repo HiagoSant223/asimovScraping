@@ -13,7 +13,7 @@ driver = webdriver.Firefox(options=options)
 
 try:
     # Acessar o site
-    driver.get("https://abrape.com.br/associados/?jsf=jet-engine:lista&tax=estado:286")
+    driver.get("https://abrape.com.br/associados/?jsf=jet-engine:lista&tax=estado:263")
     
     dados = []
 
@@ -52,14 +52,15 @@ try:
         telefone2 = nomes[3] if len(nomes) > 3 else ''
 
         # Obter o e-mail e extrair apenas a parte antes do ?
+        # Capturar os links de e-mail e redes sociais
         email_tag = soup.select_one('a[href^="mailto:"]')
-        email = email_tag.get('href', '').replace('mailto:', '') if email_tag else ''
-        email = email.split('?')[0]  # Mantém apenas a parte antes do '?'
-        
+        email = email_tag.get('href', '').replace('mailto:', '').split('?')[0] if email_tag else ''
+
         # Extrair os links corretamente
-        site = soup.select_one('a[href^="http"]').get('href', '') if soup.select_one('a[href^="http"]') else ''
+        site = soup.select_one('a.elementor-social-icon-globe').get('href', '') if soup.select_one('a.elementor-social-icon-globe') else ''
         facebook = soup.select_one('a.elementor-social-icon-facebook').get('href', '') if soup.select_one('a.elementor-social-icon-facebook') else ''
         instagram = soup.select_one('a.elementor-social-icon-instagram').get('href', '') if soup.select_one('a.elementor-social-icon-instagram') else ''
+
 
         # Adicionar ao dicionário sem o HTML
         dados.append({
@@ -86,10 +87,10 @@ finally:
     df = pd.DataFrame(dados)
     
     # Salvar em CSV
-    df.to_csv("dados_extraidos.csv", sep=';', index=False, encoding='utf-8')
+    df.to_csv("SaoPaulo-Pg-1.csv", sep=';', index=False, encoding='utf-8')
     
     # Salvar em JSON sem o HTML
-    with open("dados_extraidos.json", "w", encoding="utf-8") as f:
+    with open("SaoPaulo-Pg-1.json", "w", encoding="utf-8") as f:
         json.dump(dados, f, ensure_ascii=False, indent=4)
 
     # Fechar o navegador
