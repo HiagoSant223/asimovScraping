@@ -16,8 +16,8 @@ driver = webdriver.Firefox(options=options)
 try:
     dados = []
 
-    for page in range(1, 3):  # Para páginas de 1 a 7
-        url = f"https://abrape.com.br/associados/?jsf=jet-engine:lista&tax=estado:277&pagenum={page}"
+    for page in range(1):  # Para páginas de 1 a 7
+        url = f"https://abrape.com.br/associados/?jsf=jet-engine:lista&tax=estado:288&pagenum={page}"
         driver.get(url)
 
         # Aguarde alguns segundos para garantir que a página carregue
@@ -96,10 +96,10 @@ finally:
     df = pd.DataFrame(dados)
     
     # Salvar em CSV
-    df.to_csv("DistritoFederal.csv", sep=';', index=False, encoding='utf-8')
+    df.to_csv("Tocantins.csv", sep=';', index=False, encoding='utf-8')
     
     # Salvar em JSON sem o HTML
-    with open("DistritoFederal.json", "w", encoding="utf-8") as f:
+    with open("Tocantins.json", "w", encoding="utf-8") as f:
         json.dump(dados, f, ensure_ascii=False, indent=4)
 
     # Fechar o navegador
